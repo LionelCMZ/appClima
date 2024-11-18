@@ -4,8 +4,7 @@ import Icons from "./components/Icon.tsx";
 import { useWeather } from "./hooks/useWeather.tsx";
 
 function App() {
-  const { values, icon, cityName, getDataWeather, loading } = useWeather();
-  console.log("render");
+  const { values, icon, getDataWeather, loading, error } = useWeather();
   return (
     <section className="background">
       <header>
@@ -21,12 +20,12 @@ function App() {
               Ingrese el nombre de la ciudad:
               <input type="text" name="city" />
             </label>
-            <button>Search</button>
+            <button type="submit">Buscar</button>
           </form>
         </div>
         {loading ? (
           <h2>Loading...</h2>
-        ) : !values || cityName === "" ? (
+        ) : error ? (
           <div>Por favor ingresa el nombre de una ciudad</div>
         ) : (
           <div className="info-card-city">

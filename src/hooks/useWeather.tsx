@@ -7,25 +7,25 @@ export const useWeather = () => {
   const [cityName, setCityName] = useState<string>("");
   const [values, setValues] = useState<itemCity>();
   const [icon, setIcon] = useState<WEATHER>({ main: "", description: "" });
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [controller, setController] = useState<AbortController>()
-  const URL = API_URL+`/data/2.5/weather?q=${cityName}&lang=es&units=metric&appid=3d17795cb3f31ca82e7105ee6af27b76`;
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const URL =
+    API_URL +
+    `/data/2.5/weather?q=${cityName}&lang=es&units=metric&appid=3d17795cb3f31ca82e7105ee6af27b76`;
   const getWeather = async () => {
-    const abortController = new AbortController();
-    setController(abortController)
-    await fetch(URL, {signal: abortController.signal})
-      .then((response) => { return response.json()})
-      .then((json)=>{setValues(json); setIcon(json.weather[0])})
-      .catch((err)=>{
-        if(err.name === "AbortError"){
-            console.log();
-        }else{
-            setError(err)
-        }
+    setLoading(true);
+    await fetch(URL)
+      .then((response) => 
+        response.json())
+      .then((json) => {
+        setError(null)
+        setValues(json);
+        setIcon(json.weather[0]);
       })
-      .finally(()=>setLoading(false))
-      return () => abortController
+      .catch((err) => {
+        setError(err);
+      })
+      .finally(() => setLoading(false));
   };
   const getDataWeather = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,5 +41,5 @@ export const useWeather = () => {
     getWeather();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cityName]);
-  return {values, icon, loading, error, controller, getDataWeather, cityName}
+  return { values, icon, loading, error, getDataWeather };
 };
